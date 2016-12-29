@@ -1,0 +1,35 @@
+nginx:
+  container_name: nginx
+  build: ./nginx/
+  ports:
+    - 80:80
+    - 443:443
+  links:
+    - php
+  volumes:
+    - ./mealhub/:/var/www/html
+
+php:
+  build: ./php/
+  expose:
+    - 9000
+  volumes:
+    - ./mealhub/:/var/www/html
+  links:
+    - db
+
+db:
+  image: mariadb:latest
+  volumes_from:
+    - data
+  environment:
+    MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    MYSQL_USER: mealhub_user
+    MYSQL_PASSWORD: Temple_46
+    MYSQL_DATABASE: mealhub_db
+
+data:
+  image: mariadb:latest
+  volumes:
+    - /var/lib/mysql
+  command: "true"
